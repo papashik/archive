@@ -5,7 +5,7 @@ Elena is my first girl
 ### 1.4 Пересечение множеств (`intersect.c`)
 
 Пусть $\mathbb{N}\_{32}$ — множество натуральных чисел от 0 до 31. Даны два
-множества $A\subseteq\mathbb{N}\_{32}$ и $A\subseteq\mathbb{N}\_{32}$
+множества $A\subseteq\mathbb{N}\_{32}$ и $N\subseteq\mathbb{N}\_{32}$
 Составьте
 программу `intersect.c`, вычисляющую пересечение множеств $A$ и $B$.
 
