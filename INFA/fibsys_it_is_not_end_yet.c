@@ -1,13 +1,6 @@
-/******************************************************************************
-
-                            Online C Compiler.
-                Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
 #include <stdio.h>
 #include <math.h>
+
 int fyb(int n) {
     if (n == 0 || n == 1) {return n;}
     else {
@@ -15,22 +8,40 @@ int fyb(int n) {
     }
 }
 
-int fib_raz(long long int n) { //будет раскладывать число в систему счисления Фибоначчи рекурсивно
-    
-}
-long long int fibs[n];
-int main() {
-    int n = 93;
-    
-    long long int *p;
-    p = fibs;
-    *p = 0;
-    *(p + 1) = 1;
-    for (p = fibs + 2; p < fibs + n; p++) {
-        *p = *(p - 1) + *(p - 2);
-        printf("%lld\n", *p);
+int fib_raz(long long int number, int n, long long int fibs[n]) { // будет раскладывать number в систему счисления Фибоначчи итеративно
+   int result[n];
+   for (int i = 0; i < n; i++) {
+       result[i] = 0;
+   }
+   int flag = -1;
+   for (int i = n - 1; i >= 0; i--) {
+       if (fibs[i] <= number) {
+           if (flag == -1) {flag = n - i - 1;}
+           result[n - i - 1] = 1;
+           number -= fibs[i];
+           //printf("%lld\n", fibs[i]);
+        }
+   }
+    for (int i = flag; i < n; i++) {
+        printf("%d", result[i]);
     }
-    printf("%lld", fibs[1]);
+    //printf("\n----\n");
+   return flag;
+
+}   
+int main() {
+    int n = 91;
+    long long int fibs[n];
+    fibs[0] = 1;
+    fibs[1] = 2;
+    for (int i = 2; i < n ; i++) {
+        fibs[i] = fibs[i - 1] + fibs[i - 2];
+        //printf("%lld\n", fibs[i]);
+    }
+    long long int question;
+    scanf("%lld", &question);
+    fib_raz(question, n, fibs);
+    
     //printf("%lld", (long long int)pow(2, 63) - 1);
     
     return 0;
