@@ -77,7 +77,46 @@ func main() {
 }
 ```
 
+### Пример - возврат нескольких значений
+```golang
+package main
 
+import "fmt"
 
+func MyCalculatingFunc(a, b int) (int, int) {
+	return a + b, a * b // возвращает сумму и произведение переданных ей аргументов
+}
+
+func main() {
+	a, b := 3, 5
+	sum, mul := MyCalculatingFunc(a, b)
+	fmt.Printf("sum = %d, mul = %d", sum, mul) // выведет `sum = 8, mul = 15`
+}
+```
+
+### Пример - `return` без возврата значений
+```golang
+package main
+
+import "fmt"
+
+func MyCheckingFunc(x int, arr []int) {
+	// функция проверяет, есть ли X в срезе
+	for _, v := range arr {
+		if v == x {
+			fmt.Println(x, "найдено!")
+			return // дальше искать необязательно, производим возврат
+		}
+	}
+	fmt.Println(x, "не найдено :(") // выполнится только если Х в срезе нет
+}
+
+func main() {
+	arr := []int{1, 2, 3, 4}
+
+	MyCheckingFunc(2, arr) // выведет `2 найдено!`
+	MyCheckingFunc(5, arr) // выведет `5 не найдено :(`
+}
+```
 
 
