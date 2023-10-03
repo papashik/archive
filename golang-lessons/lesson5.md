@@ -130,8 +130,85 @@ func main() {
     fmt.Printf("X = %d, Y = %d\n", my_point.x, my_point.y) // выведет `X = 15, Y = 35`
 }
 ```
+Важный момент - обращение к полям через объект структуры или через указатель на структуру выглядит одинаково (операция разыменования сопряжена с обращением к полю):
+```golang
+// Содержимое main()
+var coords struct { x, y int }
+coords.x = 10
+pointer := &coords
+pointer.y = 20
+fmt.Println(coords) // выведет `{10 20}`
+```
 ## Структурные методы
-И последний важный момент - 
+С любым пользовательским именованным типом (или с указателем на пользовательский именованный тип) - в частности, с именованной структурой - можно связать множество специальных функций, называемых _методами_.<br>
+**Метод** – это глобальная функция, имеющая параметр-приёмник. Она объявляется как
+```golang
+func (приёмник) имя сигнатура блок
+```
+**Приёмник** – это специальный параметр, объявляемый как
+```golang
+имя_параметра пользовательский_именованный_тип
+```
+либо
+```golang
+имя_параметра *пользовательский_именованный_тип
+```
+### Пример - объявление методов структуры User
+```golang
+type User struct {
+    id int
+    name, surname string
+    friends []*User
+}
 
+// параметр-приёмник - объект типа `User`
+func (u User) GetFullName() string { return u.name + " " + u.surname }
 
+// параметр-приёмник - объект типа `*User`
+func (u *User) AddFriend(friend *User) { u.friends = append(u.friends, friend) }
+```
+С типом `User` связан только метод `GetFullName()`.
+С указателем на `User` связан метод `AddFriend()`, а также метод `GetFullName()`. 
+Дело в том, что набор методов, связанный с некоторым именованным пользовательским типом `T`, автоматически переходит и на тип `*T`.
 
+Для вызова методов предусмотрен особый синтаксис:
+```параметр_приёмник.имя_метода(пар1, ..., парM)```
+Набор методов для типа параметра-приёмника должен содержать вызываемый метод.
+
+**В чем разница** между методами, связанными с `*User` и `User`?<br>
+Для методов, имеющих параметром-приёмником объект типа `User`, в момент вызова в имя параметра (в данном случае - `u`) **копируется значение** оригинального (вызывающего метод) объекта, а для методов, имеющих параметром-приёмником объект типа `*User`, в момент вызова в имя параметра **копируется адрес** оригинального объекта. Следовательно, оригинальный объект можно изменять только через методы, имеющие параметром-приёмником указатель на какой-либо тип.
+### Пример - работа с типом User
+```golang
+package main
+import "fmt"
+
+type User struct {
+    id int
+    name, surname string
+    friends []*User
+}
+
+func (u User) GetFullName() string { return u.name + " " + u.surname }
+
+func (u User) GetFriendsNames() []string {
+    names := make([]string, len(u.friends))
+    for i := range u.friends {
+        names[i] = u.friends[i].GetFullName()
+    }
+    return names
+}
+
+func (u *User) AddFriend(friend *User) { u.friends = append(u.friends, friend) }
+
+func main() {
+    pavel := User{id: 123, name: "Pavel"}
+    alex := User{456, "Alexander", "Pushkin", []*User{}}
+    rulet := User{id: 789, name: "Rulet", surname: "Makovyy"}
+    fmt.Println(rulet.GetFullName()) // выведет `Rulet Makovyy`
+
+    pavel.AddFriend(&alex)
+    pavel.AddFriend(&rulet)
+
+    fmt.Println(pavel.GetFriendsNames()) // выведет `[Alexander Pushkin Rulet Makovyy]`
+}
+```
